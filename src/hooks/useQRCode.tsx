@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import QRCodeStyling, { type ShapeType } from "qr-code-styling";
+import QRCodeStyling, { type DotType, type ShapeType } from "qr-code-styling";
 import ReactDOMServer from "react-dom/server";
 import type { SvgIconComponent } from "@mui/icons-material";
 
@@ -18,6 +18,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
   const [embedSize, setEmbedSize] = useState(0.35);
   const [iconComponent, setIconComponent] = useState<SvgIconComponent | undefined>(initialIconComponent);
   const [iconBlobUrl, setIconBlobUrl] = useState<string | undefined>(undefined);
+  const [dotsOptionsColor, setDotsOptionsColor] = useState<string>("#000000");
 
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const qrCodeRef = useRef<QRCodeStyling | null>(null);
@@ -75,7 +76,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
     if (url.trim() === "") {
       console.log("URL is empty, clearing container");
       // Clear the container if URL is empty
-      container.innerHTML = "";
+      //container.innerHTML = "";
       // keep a placeholder data to avoid library errors
       qr.update({ data: " " });
       return;
@@ -99,11 +100,12 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
       shape,
       image: finalImageUrl,
       imageOptions: { crossOrigin: "anonymous", margin: 0, imageSize: embedSize},
+      dotsOptions: { color: dotsOptionsColor, type: "rounded" as DotType},
     };
 
     console.log("Updating QR Code with", updated);
     qr.update(updated);
-  }, [url, width, height, shape, imageUrl, iconBlobUrl, embedSize]);
+  }, [url, width, height, shape, imageUrl, iconBlobUrl, embedSize, dotsOptionsColor]);
 
   // Create a stable blob URL for the active IconComponent (if any).
   useEffect(() => {
@@ -170,6 +172,8 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
     setIconComponent,
     embedSize,
     setEmbedSize,
+    dotsOptionsColor,
+    setDotsOptionsColor,
   };
 }
 
