@@ -25,10 +25,11 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
 
   // Initialize QR code once and append its element to the container.
   useEffect(() => {
-    console.log("Initializing QR Code");
+    console.log("Initializing QR Code for the first time.");
     qrCodeRef.current = new QRCodeStyling({
       width,
       height,
+      type: "svg",
       shape,
       data: " ", // placeholder to avoid empty render
       dotsOptions: {
@@ -43,51 +44,27 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
       },
     });
 
-    const qr = qrCodeRef.current;
-    const container = qrContainerRef.current;
-
-    if (qr) {
+    if (qrCodeRef.current) {
       // Ensure appended if styling is sufficiently initialized
-      console.log("Appending QR Code to container");
-      qr.append(container!);
+      console.log("Appending QR Code to container on init.");
+      qrCodeRef.current.append(qrContainerRef.current!);
     }
-
-    return () => {
-    //   try {
-    //     if (container) container.innerHTML = "";
-    //   } catch (err) {
-    //     // ignore cleanup errors
-    //   }
-    //   qrCodeRef.current = null;
-    };
-    // only run on mount/unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update QR code when relevant state changes.
   useEffect(() => {
-    const qr = qrCodeRef.current;
-    const container = qrContainerRef.current;
-    if (!qr || !container) {
+    if (!qrCodeRef.current || !qrContainerRef.current) {
         console.log("QR or container not ready");
         return;
-    }
-
-    if (url.trim() === "") {
-      console.log("URL is empty, clearing container");
-      // Clear the container if URL is empty
-      //container.innerHTML = "";
-      // keep a placeholder data to avoid library errors
-      qr.update({ data: " " });
-      return;
     }
 
     const finalImageUrl = imageUrl ?? iconBlobUrl;
 
     // Ensure the QR element has been appended to the container before updating.
-    if (!container.hasChildNodes()) {
+    if (!qrContainerRef.current.hasChildNodes()) {
       try {
-        qr.append(container);
+        console.log("There is no container ref for the QR code yet, appending.");
+        qrCodeRef.current.append(qrContainerRef.current);
       } catch (err) {
         // ignore append errors, will try to update anyway
       }
@@ -104,7 +81,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
     };
 
     console.log("Updating QR Code with", updated);
-    qr.update(updated);
+    qrCodeRef.current.update(updated);
   }, [url, width, height, shape, imageUrl, iconBlobUrl, embedSize, dotsOptionsColor]);
 
   // Create a stable blob URL for the active IconComponent (if any).
@@ -153,6 +130,15 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
     setEmbedSize(sizeFraction);
   }
 
+  const onDownloadClick = () => {
+    const qrCode = qrCodeRef.current;
+    console.log("Downloading QR Code: ", qrCode?._options);
+
+    qrCode?.download({
+      extension: "png"
+    });
+  }
+
   const isUrlEmpty = useMemo(() => url.trim() === "", [url]);
 
   return {
@@ -174,6 +160,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
     setEmbedSize,
     dotsOptionsColor,
     setDotsOptionsColor,
+    onDownloadClick,
   };
 }
 

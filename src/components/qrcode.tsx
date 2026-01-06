@@ -11,7 +11,7 @@ const sizeMin = 50;
 const exampleUrl = "https://www.example.com";
 
 export function QRCode() {
-  const { url, size, shape, embedSize, qrContainerRef, imageUrl, setImageUrl, iconComponent, setIconComponent, dotsOptionsColor, setDotsOptionsColor, isUrlEmpty, onUrlChange, onSizeChange, onShapeChange, onEmbedSizeChange} = useQRCode({url: exampleUrl});
+  const { url, size, shape, embedSize, qrContainerRef, imageUrl, setImageUrl, iconComponent, setIconComponent, dotsOptionsColor, setDotsOptionsColor, isUrlEmpty, onUrlChange, onSizeChange, onShapeChange, onEmbedSizeChange, onDownloadClick } = useQRCode({url: exampleUrl});
   const { input, error, handleChange } = useSizeInput(size, sizeMin, sizeMax, (val) => {
     onSizeChange({ target: { value: val } } as any);
   });
@@ -70,7 +70,12 @@ export function QRCode() {
                 Enter a URL to generate a QR code
               </Typography>
             ) : (
-              <Box id="qr-code-container" ref={qrContainerRef}/>
+              <>
+                <Box id="qr-code-container" ref={qrContainerRef}/>
+                <Box>
+                  <button onClick={onDownloadClick}>Download</button>
+                </Box>
+              </>
             )}
           </Box>
         </Grid>
