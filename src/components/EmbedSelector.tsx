@@ -1,5 +1,5 @@
 import { Box, Typography, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, IconButton, Stack} from "@mui/material";
-import { Upload, GitHub, Instagram, Link, Facebook, LinkedIn, YouTube, type SvgIconComponent, Face } from "@mui/icons-material";
+import { Upload, GitHub, Instagram, Link, Facebook, LinkedIn, YouTube, type SvgIconComponent } from "@mui/icons-material";
 import { useState } from "react";
 
 
