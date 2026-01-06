@@ -11,14 +11,26 @@ export default function useSizeInput(size: number, min: number, max: number, onC
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value;
-    const cleaned = rawValue.replace(/\D/g, ""); // remove non-digits
+    // remove any characters except digits and dot
+    const cleaned = rawValue.replace(/[^0-9.]/g, "");
+
+    // strict validation: allow integers, decimals with digits on at least one side (e.g. "123", "123.45", ".5").
+    // Disallow empty string, lone dot, multiple dots, or other malformed inputs.
+    const validNumberRegex = /^(?:\d+\.\d+|\d+|\.\d+)$/;
 
     setInput(cleaned);
 
-    const numericValue = Number(cleaned);
-    setError(cleaned !== "" && (numericValue < min || numericValue > max));
+    if (!cleaned || !validNumberRegex.test(cleaned)) {
+      // invalid format (including "" and "." and "12..3")
+      setError(true);
+      return;
+    }
 
-    if (numericValue >= min && numericValue <= max) {
+    const numericValue = parseFloat(cleaned);
+    const outOfRange = numericValue < min || numericValue > max;
+    setError(outOfRange);
+
+    if (!outOfRange) {
       onChange(numericValue);
     }
   };

@@ -1,19 +1,21 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import QRCodeStyling, { type ShapeType } from "qr-code-styling";
 import ReactDOMServer from "react-dom/server";
 import type { SvgIconComponent } from "@mui/icons-material";
 
 interface UseQRCodeWithProps {
+  url?:string;
   IconComponent?: SvgIconComponent; // optional MUI icon component
   imageUrl?: string; // optional image URL
 }
 
-export default function useQRCode({ IconComponent: initialIconComponent, imageUrl: initialImageUrl }: UseQRCodeWithProps = {}) {
-  const [url, setUrl] = useState("");
+export default function useQRCode({ url: initialUrl, IconComponent: initialIconComponent, imageUrl: initialImageUrl }: UseQRCodeWithProps = {}) {
+  const [url, setUrl] = useState(initialUrl || "");
   const [width, setWidth] = useState(300);
   const [height, setHeight] = useState(300);
   const [shape, setShape] = useState<ShapeType>("square");
   const [imageUrl, setImageUrl] = useState<string | undefined>(initialImageUrl);
+  const [embedSize, setEmbedSize] = useState(0.35);
   const [iconComponent, setIconComponent] = useState<SvgIconComponent | undefined>(initialIconComponent);
   const [iconBlobUrl, setIconBlobUrl] = useState<string | undefined>(undefined);
 
@@ -37,7 +39,6 @@ export default function useQRCode({ IconComponent: initialIconComponent, imageUr
       },
       imageOptions: {
         crossOrigin: "anonymous",
-        margin: 20,
       },
     });
 
@@ -97,12 +98,12 @@ export default function useQRCode({ IconComponent: initialIconComponent, imageUr
       data: url || " ",
       shape,
       image: finalImageUrl,
-      imageOptions: { crossOrigin: "anonymous", margin: 10 },
+      imageOptions: { crossOrigin: "anonymous", margin: 0, imageSize: embedSize},
     };
 
     console.log("Updating QR Code with", updated);
     qr.update(updated);
-  }, [url, width, height, shape, imageUrl, iconBlobUrl]);
+  }, [url, width, height, shape, imageUrl, iconBlobUrl, embedSize]);
 
   // Create a stable blob URL for the active IconComponent (if any).
   useEffect(() => {
@@ -146,6 +147,10 @@ export default function useQRCode({ IconComponent: initialIconComponent, imageUr
     setWidth(parsed);
   };
 
+  const onEmbedSizeChange = (sizeFraction: number) => {
+    setEmbedSize(sizeFraction);
+  }
+
   const isUrlEmpty = useMemo(() => url.trim() === "", [url]);
 
   return {
@@ -157,11 +162,14 @@ export default function useQRCode({ IconComponent: initialIconComponent, imageUr
     onSizeChange,
     onShapeChange,
     onUrlChange,
+    onEmbedSizeChange,
     isUrlEmpty,
     imageUrl,
     setImageUrl,
     iconComponent,
     setIconComponent,
+    embedSize,
+    setEmbedSize,
   };
 }
 
