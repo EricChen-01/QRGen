@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, TextField, Stack, Divider } from "@mui/material";
+import { Box, Grid, Typography, TextField, Stack } from "@mui/material";
 import useQRCode from "../hooks/useQRCode";
 import useSizeInput from "../hooks/useSizeInput";
 import EmbedSelector from "./EmbedSelector";

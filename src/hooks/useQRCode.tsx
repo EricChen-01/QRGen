@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import QRCodeStyling, { type DotType, type FileExtension, type Options, type ShapeType } from "qr-code-styling";
+import QRCodeStyling, { type FileExtension, type Options, type ShapeType } from "qr-code-styling";
 import ReactDOMServer from "react-dom/server";
 import type { SvgIconComponent } from "@mui/icons-material";
 
