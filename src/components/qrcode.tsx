@@ -4,14 +4,15 @@ import useSizeInput from "../hooks/useSizeInput";
 import EmbedSelector from "./EmbedSelector";
 import ShapeSelector from "./ShapeSelector";
 import ColorPicker from "./ColorPicker";
+import DownloadButtons from "./DownloadButtons";
 
 const sizeMax = 600;
-const sizeMin = 50;
+const sizeMin = 60;
 
 const exampleUrl = "https://www.example.com";
 
 export function QRCode() {
-  const { url, size, shape, embedSize, qrContainerRef, imageUrl, setImageUrl, iconComponent, setIconComponent, dotsOptionsColor, setDotsOptionsColor, isUrlEmpty, onUrlChange, onSizeChange, onShapeChange, onEmbedSizeChange, onDownloadClick } = useQRCode({url: exampleUrl});
+  const { url, size, iconComponentColor, setIconComponentColor, shape, embedSize, qrContainerRef, imageUrl, setImageUrl, iconComponent, setIconComponent, dotsOptionsColor, setDotsOptionsColor, isUrlEmpty, onUrlChange, onSizeChange, onShapeChange, onEmbedSizeChange, onDownloadClick } = useQRCode({url: exampleUrl});
   const { input, error, handleChange } = useSizeInput(size, sizeMin, sizeMax, (val) => {
     onSizeChange({ target: { value: val } } as any);
   });
@@ -43,7 +44,7 @@ export function QRCode() {
         <Grid size={{xs: 12, sm: 6}} order={{xs: 2, sm: 1}}>
           <Stack spacing={2}>
             <TextField label="Data" value={url} onChange={onUrlChange} />
-            <TextField type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? "Size must be between 50 and 600" : ""} />
+            <TextField type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} />
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={3}
@@ -51,6 +52,8 @@ export function QRCode() {
             >
               <ShapeSelector shape={shape} onShapeChange={onShapeChange} />
               <EmbedSelector
+                iconComponentColor={iconComponentColor ?? dotsOptionsColor}
+                setIconComponentColor={setIconComponentColor}
                 imageUrl={imageUrl}
                 setImageUrl={setImageUrl}
                 iconComponent={iconComponent}
@@ -58,7 +61,7 @@ export function QRCode() {
                 embedSize={embedSize}
                 setEmbedSize={onEmbedSizeChange}
               />
-              <ColorPicker color={dotsOptionsColor} onColorChange={setDotsOptionsColor} />
+              <ColorPicker title="QR Code Color" color={dotsOptionsColor} onColorChange={setDotsOptionsColor} />
             </Stack>
           </Stack>
         </Grid>
@@ -71,10 +74,8 @@ export function QRCode() {
               </Typography>
             ) : (
               <>
+                <DownloadButtons onDownload={onDownloadClick}/>
                 <Box id="qr-code-container" ref={qrContainerRef}/>
-                <Box>
-                  <button onClick={onDownloadClick}>Download</button>
-                </Box>
               </>
             )}
           </Box>

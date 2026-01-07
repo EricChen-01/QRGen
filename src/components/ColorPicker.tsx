@@ -3,11 +3,12 @@ import { ChromePicker, type ColorResult } from "react-color";
 import { useState, useEffect } from "react";
 
 interface ColorPickerProps {
+  title?: string;
   color: string;
   onColorChange: (newColor: string) => void;
 }
 
-export default function ColorPicker({ color, onColorChange }: ColorPickerProps) {
+export default function ColorPicker({ title="Color Picker", color, onColorChange }: ColorPickerProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [draftColor, setDraftColor] = useState(color);
 
@@ -29,7 +30,7 @@ export default function ColorPicker({ color, onColorChange }: ColorPickerProps) 
   return (
     <Box mt={2}>
       <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-        Color Picker
+        {title}
       </Typography>
 
       <Box
