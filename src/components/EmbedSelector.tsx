@@ -1,7 +1,7 @@
 import { Box, Typography, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, IconButton, Stack} from "@mui/material";
 import { Upload, GitHub, Instagram, Link, Facebook, LinkedIn, YouTube, type SvgIconComponent } from "@mui/icons-material";
 import { useState } from "react";
-
+import ColorPicker from "./ColorPicker";
 
 type EmbedSizePreset = "small" | "medium" | "large";
 
@@ -19,17 +19,27 @@ const NUMBER_TO_PRESET: Record<number, EmbedSizePreset> = {
   0.5: "large",
 };
 
+const ICONS = [
+  { key: "linkedin", component: LinkedIn },
+  { key: "github", component: GitHub },
+  { key: "instagram", component: Instagram },
+  { key: "link", component: Link },
+  { key: "facebook", component: Facebook },
+  { key: "youtube", component: YouTube },
+];
 
 interface EmbedSelectorProps {
   imageUrl: string | undefined;
   setImageUrl: (url: string | undefined) => void;
   iconComponent: React.ElementType | undefined;
   setIconComponent: (icon: SvgIconComponent | undefined) => void;
+  iconComponentColor: string;
+  setIconComponentColor: (color: string) => void;
   embedSize: number;
   setEmbedSize: (sizeFraction: number) => void;
 }
 
-export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, setIconComponent, embedSize, setEmbedSize}: EmbedSelectorProps) {
+export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, setIconComponent, embedSize, setEmbedSize, iconComponentColor, setIconComponentColor}: EmbedSelectorProps) {
   const [mode, setMode] = useState<EmbedMode>("none");
   const [urlInput, setUrlInput] = useState<string>("");
 
@@ -69,7 +79,7 @@ export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, se
   
   return (
     <FormControl focused={false}>
-      <FormLabel>Embed</FormLabel>
+      <FormLabel>Logo</FormLabel>
       <RadioGroup
         row
         value={mode}
@@ -123,54 +133,47 @@ export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, se
 
       {mode === "icon" && (
         <Stack spacing={1.5} mt={1}>
-          <FormLabel>Select an icon</FormLabel>
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            <IconButton
-              size="large"
-              onClick={() => setIconComponent(LinkedIn)}>
-              <LinkedIn />
-            </IconButton>
-
-            <IconButton
-              size="large"
-              onClick={() => setIconComponent(GitHub)}>
-              <GitHub />
-            </IconButton>
-
-            <IconButton
-              size="large"
-              onClick={() => setIconComponent(Instagram)}>
-              <Instagram />
-            </IconButton>
-
-            <IconButton
-              size="large"
-              onClick={() => setIconComponent(Link)}>
-              <Link />
-            </IconButton>
-
-            <IconButton
-              size="large"
-              onClick={() => setIconComponent(Facebook)}>
-              <Facebook />
-            </IconButton>
-
-            <IconButton
-              size="large"
-              onClick={() => setIconComponent(YouTube)}>
-              <YouTube />
-            </IconButton>
-          </Stack>
-
+          <FormLabel>Icon</FormLabel>
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(3, minmax(48px, 1fr))"
+            gap={1}
+            maxWidth={320}
+            >
+              {ICONS.map(({ key, component: Icon }) => {
+                const selected = iconComponent === Icon;
+                return (
+                  <IconButton
+                    key={key}
+                    size="large"
+                    onClick={() => setIconComponent(Icon)}
+                    sx={{
+                      borderRadius: 2,
+                      border: selected ? 2 : 1,
+                      borderColor: selected ? "primary.main" : "divider",
+                      backgroundColor: selected ? "action.selected" : "transparent",
+                    }}
+                  >
+                    <Icon />
+                  </IconButton>
+                );
+              })}
+          </Box>
           <Typography variant="caption" color="text.secondary">
-            Choose an icon to embed in the center of the QR code
+            Select an icon to display in the center of the QR code
           </Typography>
+          <Stack spacing={1.5} mt={1}>
+            <ColorPicker title="Icon Color" color={iconComponentColor} onColorChange={setIconComponentColor}/>
+            <Typography variant="caption" color="text.secondary">
+              This controls the icon color only
+            </Typography>
+          </Stack>
         </Stack>
       )}
 
       {(mode === "image" || mode === "icon") && (
         <Box mt={2}>
-          <FormLabel component="legend">Embed size</FormLabel>
+          <FormLabel component="legend">Size</FormLabel>
           <RadioGroup
             row
             value={NUMBER_TO_PRESET[embedSize]}
