@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, TextField, Stack } from "@mui/material";
+import { Box, Grid, Typography, TextField, Stack, Divider } from "@mui/material";
 import useQRCode from "../hooks/useQRCode";
 import useSizeInput from "../hooks/useSizeInput";
 import EmbedSelector from "./EmbedSelector";
@@ -43,14 +43,15 @@ export function QRCode() {
       <Grid container spacing={5}>
         <Grid size={{xs: 12, sm: 6}} order={{xs: 2, sm: 1}}>
           <Stack spacing={2}>
-            <TextField label="Data" value={url} onChange={onUrlChange} />
-            <TextField type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} />
+            <TextField sx={{width:'60%'}} label="Data" value={url} onChange={onUrlChange} />
+            <TextField sx={{width:'120px'}} type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} />
             <Stack
               direction={{ xs: "column", sm: "row" }}
               spacing={3}
               alignItems="flex-start"
             >
               <ShapeSelector shape={shape} onShapeChange={onShapeChange} />
+              <ColorPicker title="QR Code Color" color={dotsOptionsColor} onColorChange={setDotsOptionsColor} />
               <EmbedSelector
                 iconComponentColor={iconComponentColor ?? dotsOptionsColor}
                 setIconComponentColor={setIconComponentColor}
@@ -61,22 +62,22 @@ export function QRCode() {
                 embedSize={embedSize}
                 setEmbedSize={onEmbedSizeChange}
               />
-              <ColorPicker title="QR Code Color" color={dotsOptionsColor} onColorChange={setDotsOptionsColor} />
+              <Box>
+                <Typography variant="subtitle1" color="text.secondary">Download</Typography>
+                <DownloadButtons disabled={isUrlEmpty} onDownload={onDownloadClick}/>
+              </Box>
             </Stack>
           </Stack>
         </Grid>
         <Grid size={{xs: 12, sm: 6}} order={{xs: 1, sm: 2}}>
-          <Box mt={2}>
+          <Box>
             {
             isUrlEmpty ? (
               <Typography color="text.secondary">
                 Enter a URL to generate a QR code
               </Typography>
             ) : (
-              <>
-                <DownloadButtons onDownload={onDownloadClick}/>
                 <Box id="qr-code-container" ref={qrContainerRef}/>
-              </>
             )}
           </Box>
         </Grid>

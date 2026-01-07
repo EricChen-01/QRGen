@@ -136,7 +136,7 @@ export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, se
           <FormLabel>Icon</FormLabel>
           <Box
             display="grid"
-            gridTemplateColumns="repeat(auto-fill, minmax(48px, 1fr))"
+            gridTemplateColumns="repeat(3, minmax(48px, 1fr))"
             gap={1}
             maxWidth={320}
             >
