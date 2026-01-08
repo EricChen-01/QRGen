@@ -1,4 +1,4 @@
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "@mui/material";
+import { Radio, RadioGroup, FormControlLabel, FormLabel, Box} from "@mui/material";
 
 interface ShapeSelectorProps {
   shape: string;
@@ -7,7 +7,7 @@ interface ShapeSelectorProps {
 
 export default function ShapeSelector({ shape, onShapeChange }: ShapeSelectorProps) {
   return (
-    <FormControl>
+    <Box>
         <FormLabel id="demo-row-radio-buttons-group-label">QR Code Shape</FormLabel>
         <RadioGroup
         row
@@ -15,9 +15,9 @@ export default function ShapeSelector({ shape, onShapeChange }: ShapeSelectorPro
         value={shape}
         onChange={onShapeChange}
         >
-        <FormControlLabel value="square" control={<Radio />} label="Square" />
-        <FormControlLabel value="circle" control={<Radio />} label="Circle" />
+          <FormControlLabel value="square" control={<Radio />} label="Square" />
+          <FormControlLabel value="circle" control={<Radio />} label="Circle" />
         </RadioGroup>
-    </FormControl>
+    </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, IconButton, Stack} from "@mui/material";
+import { Box, Typography, TextField, Radio, RadioGroup, FormControlLabel, FormLabel, Button, IconButton, Stack } from "@mui/material";
 import { Upload, GitHub, Instagram, Link, Facebook, LinkedIn, YouTube, type SvgIconComponent } from "@mui/icons-material";
 import { useState } from "react";
 import ColorPicker from "./ColorPicker";
@@ -78,7 +78,7 @@ export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, se
   };
   
   return (
-    <FormControl focused={false}>
+    <Box>
       <FormLabel>Logo</FormLabel>
       <RadioGroup
         row
@@ -197,6 +197,6 @@ export default function EmbedSelector({ imageUrl, setImageUrl, iconComponent, se
           </RadioGroup>
         </Box>
       )}
-    </FormControl>
+    </Box>
   );
 }

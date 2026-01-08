@@ -1,4 +1,4 @@
-import { Box, Typography, Popover } from "@mui/material";
+import { Box, Popover, FormLabel} from "@mui/material";
 import { ChromePicker, type ColorResult } from "react-color";
 import { useState, useEffect } from "react";
 
@@ -28,11 +28,8 @@ export default function ColorPicker({ title="Color Picker", color, onColorChange
   const open = Boolean(anchorEl);
 
   return (
-    <Box mt={2}>
-      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-        {title}
-      </Typography>
-
+    <Box>
+      <FormLabel>{title}</FormLabel>
       <Box
         onClick={handleClick}
         sx={{
