@@ -1,14 +1,14 @@
-import { Box, Grid, Typography, TextField, Stack } from "@mui/material";
+import { Box, Grid, Typography, TextField, Stack, Slider } from "@mui/material";
 import useQRCode from "../hooks/useQRCode";
-import useSizeInput from "../hooks/useSizeInput";
 import EmbedSelector from "./EmbedSelector";
 import ShapeSelector from "./ShapeSelector";
 import ColorPicker from "./ColorPicker";
 import DownloadButtons from "./DownloadButtons";
+import SizeSlider from "./SizeSlider";
 
-const sizeMax = 600;
-const sizeMin = 60;
-
+const sizeMin = 200;
+const sizeMax = 3000;
+const sizeMid = (sizeMax + sizeMin) / 2
 const exampleUrl = "https://www.example.com";
 
 export function QRCode() {
@@ -32,10 +32,7 @@ export function QRCode() {
     onShapeChange,
     onEmbedSizeChange,
     onDownloadClick,
-  } = useQRCode({ url: exampleUrl, qrCodeSize: 350});
-  const { input, error, handleChange } = useSizeInput(size, sizeMin, sizeMax, (val) => {
-    onSizeChange({ target: { value: val } } as any);
-  });
+  } = useQRCode({ url: exampleUrl, qrCodeSize: sizeMid});
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fafafa" }}>
@@ -76,7 +73,13 @@ export function QRCode() {
             </Typography>
             <Stack gap={2}>
               <TextField sx={{width:'60%'}} label="Data" value={url} onChange={onUrlChange} />
-              <TextField sx={{width:'120px'}} type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} />
+              {/* <TextField sx={{width:'120px'}} type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} /> */}
+              <SizeSlider
+                sizeMin={sizeMin}
+                sizeMax={sizeMax}
+                sliderValue={size}
+                onQrCodeSizeChange={onSizeChange}
+              />
               <Stack
                 direction={{ xs: "column", sm: "column", md: "row" }}
                 spacing={2}
@@ -125,9 +128,24 @@ export function QRCode() {
             ) : (
                 <Box 
                   id="qr-code-container" 
-                  ref={qrContainerRef} />
+                  ref={qrContainerRef} 
+                  sx={{
+                    // width: "100%",
+                    // maxWidth: "350px",
+                    "& canvas": {
+                      width: "300px !important",
+                      height: "300px !important"
+                      // width: "100% !important",
+                      // height: "auto",
+                      // display: "block",
+                    }
+                  }}
+                />
             )}
           </Box>
+        </Grid>
+        <Grid size={{xs:12}} order={{xs: 3}}>
+          
         </Grid>
       </Grid>
     </Box>
