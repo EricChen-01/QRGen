@@ -1,5 +1,5 @@
 import { Box, Slider } from "@mui/material";
-import { useState, type ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
 
 interface ColorPickerProps {
   step?: number;
