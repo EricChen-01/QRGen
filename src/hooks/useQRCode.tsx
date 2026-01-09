@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import QRCodeStyling, { type FileExtension, type Options, type ShapeType } from "qr-code-styling";
 import ReactDOMServer from "react-dom/server";
 import type { SvgIconComponent } from "@mui/icons-material";
+import { saveAs } from "file-saver";
 
 interface UseQRCodeWithProps {
   url?:string;
@@ -29,12 +30,8 @@ const downloadQRCode = (qrCode: QRCodeStyling, filename = "qr-code", fileExtensi
 
 const handleBrowser = (blob: Blob, filename: string, fileExtension: string) => {
     // Standard download for normal browsers
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${filename}.${fileExtension}`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const fullFileName = `${filename}.${fileExtension}`;
+    saveAs(blob, fullFileName)
 }
 
 const handleEmbededBrowser = async (blob: Blob, filename: string, fileExtension: string) => {
@@ -42,15 +39,9 @@ const handleEmbededBrowser = async (blob: Blob, filename: string, fileExtension:
   const url = URL.createObjectURL(blob);
   const fullFileName = `${filename}.${fileExtension}`;
   if(isGoogleApp){
-
+    saveAs(blob, fullFileName);
   }else{
-    // Messenger, Instagram, FB webview: try automatic download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fullFileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    saveAs(blob, fullFileName)
   }
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -176,11 +167,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
   const onDownloadClick = async (fileExtension: FileExtension) => {
     if (!qrCode) return;
     
-    // Always use canvas for downloads to ensure compatibility
-    qrCode.update({ type: "canvas" });
-
     downloadQRCode(qrCode, "qr-code", fileExtension);
-    //qrCode.download({ name: "qr-code", extension: fileExtension });
   };
 
 

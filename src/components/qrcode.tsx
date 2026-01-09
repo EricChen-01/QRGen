@@ -79,7 +79,7 @@ export function QRCode() {
               <TextField sx={{width:'120px'}} type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} />
               <Stack
                 direction={{ xs: "column", sm: "column", md: "row" }}
-                spacing={3}
+                spacing={2}
                 alignItems="flex-start"
               >
                 <ShapeSelector shape={shape} onShapeChange={onShapeChange} />
@@ -94,7 +94,11 @@ export function QRCode() {
                   embedSize={embedSize}
                   setEmbedSize={onEmbedSizeChange}
                 />
-                <DownloadButtons disabled={isUrlEmpty} onDownload={onDownloadClick}/>
+
+                <DownloadButtons
+                  disabled={isUrlEmpty}
+                  onDownload={onDownloadClick}
+                />
               </Stack>
             </Stack>
           </Box>
