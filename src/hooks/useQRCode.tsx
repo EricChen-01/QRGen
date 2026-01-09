@@ -2,19 +2,55 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import QRCodeStyling, { type FileExtension, type Options, type ShapeType } from "qr-code-styling";
 import ReactDOMServer from "react-dom/server";
 import type { SvgIconComponent } from "@mui/icons-material";
+import { saveAs } from "file-saver";
 
 interface UseQRCodeWithProps {
   url?:string;
   IconComponent?: SvgIconComponent;
   imageUrl?: string; 
+  qrCodeSize?: number;
 }
 
 const qrCode: QRCodeStyling | null = new QRCodeStyling();
 
-export default function useQRCode({ url: initialUrl, IconComponent: initialIconComponent, imageUrl: initialImageUrl }: UseQRCodeWithProps = {}) {
+const downloadQRCode = (qrCode: QRCodeStyling, filename = "qr-code", fileExtension: string) => {
+  // Detect embedded / problematic browsers
+  const userAgent = navigator.userAgent || "";
+  const isEmbeddedBrowser = /GSA|FBAN|FBAV|Instagram|Messenger|webview/.test(userAgent);
+  qrCode.getRawData(fileExtension as FileExtension).then(async (blob: Blob) => {
+    if (isEmbeddedBrowser) {
+      handleEmbededBrowser(blob, filename, fileExtension);
+    } else {
+      handleBrowser(blob, filename, fileExtension);
+    }
+  }).catch((err) => {
+    console.error("Failed to get raw data for download:", err);
+  });
+};
+
+const handleBrowser = (blob: Blob, filename: string, fileExtension: string) => {
+    // Standard download for normal browsers
+    const fullFileName = `${filename}.${fileExtension}`;
+    saveAs(blob, fullFileName)
+}
+
+const handleEmbededBrowser = async (blob: Blob, filename: string, fileExtension: string) => {
+  const isGoogleApp = /GSA/.test(navigator.userAgent);
+  const url = URL.createObjectURL(blob);
+  const fullFileName = `${filename}.${fileExtension}`;
+  if(isGoogleApp){
+    saveAs(blob, fullFileName);
+  }else{
+    saveAs(blob, fullFileName)
+  }
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export default function useQRCode({ url: initialUrl, IconComponent: initialIconComponent, imageUrl: initialImageUrl, qrCodeSize: initialSize = 300}: UseQRCodeWithProps = {}) {
   const [url, setUrl] = useState(initialUrl || "");
-  const [width, setWidth] = useState(300);
-  const [height, setHeight] = useState(300);
+  const [width, setWidth] = useState(initialSize);
+  const [height, setHeight] = useState(initialSize);
   const [shape, setShape] = useState<ShapeType>("square");
   const [imageUrl, setImageUrl] = useState<string | undefined>(initialImageUrl);
   const [embedSize, setEmbedSize] = useState(0.35);
@@ -22,6 +58,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
   const [iconBlobUrl, setIconBlobUrl] = useState<string | undefined>(undefined);
   const [dotsOptionsColor, setDotsOptionsColor] = useState<string>("#000000");
   const [iconComponentColor, setIconComponentColor] = useState<string | undefined>()
+
 
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -74,7 +111,7 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
         width,
         height,
         data: url,
-        type: "svg",
+        //type: "svg",
         shape,
         image: iconBlobUrl ?? imageUrl ?? undefined,
         imageOptions: {
@@ -127,22 +164,12 @@ export default function useQRCode({ url: initialUrl, IconComponent: initialIconC
     setEmbedSize(sizeFraction);
   }
 
-  const onDownloadClick = (fileExtension: string) => {
-    console.log("Current QR Code Opotions before download:", qrCode?._options);
-    try {
-      if (fileExtension === "png" || fileExtension === "jpeg" || fileExtension === "webp"){
-        // Setting back to canvas because download can't handle svg type for some reason.
-        const options: Partial<Options> | null = {
-          type: "canvas",
-        };
-        qrCode?.update(options);
-      }
-      // Download 
-      qrCode?.download({ name: fileExtension, extension: fileExtension as FileExtension });
-    } catch (err) {
-      console.error("qr.download failed", err);
-    }
-  }
+  const onDownloadClick = async (fileExtension: FileExtension) => {
+    if (!qrCode) return;
+    
+    downloadQRCode(qrCode, "qr-code", fileExtension);
+  };
+
 
   const isUrlEmpty = useMemo(() => url.trim() === "", [url]);
 
