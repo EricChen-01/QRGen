@@ -11,6 +11,7 @@ Try it here: https://qrgen.ericgchen.com
 - Colorable QR Code
 - Embed an image or MUI SVG icon in the center (configurable size)
 - Download as `png`, `jpeg`, `webp`, or `svg`
+- Mobile friendly
 
 ## Usage
 
