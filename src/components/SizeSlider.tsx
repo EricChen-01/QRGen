@@ -63,6 +63,9 @@ export default function ColorPicker({
         min={sizeMin}
         max={sizeMax}
         onChange={handleOnSliderValueChange}
+        sx={{
+            width:'90%'
+        }}
       />
     </Box>
   );

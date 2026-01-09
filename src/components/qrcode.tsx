@@ -75,7 +75,7 @@ export function QRCode() {
               Customize
             </Typography>
             <Stack gap={2}>
-              <TextField multiline sx={{width:'60%'}} label="Data" value={url} onChange={onUrlChange} />
+              <TextField multiline sx={{width:'90%'}} label="Data" value={url} onChange={onUrlChange} />
               <SizeSlider
                 sizeMin={sizeMin}
                 sizeMax={sizeMax}
@@ -126,7 +126,7 @@ export function QRCode() {
           >
             {
             isUrlEmpty ? (
-              <Typography color="text.secondary">
+              <Typography variant="subtitle1" color="text.secondary">
                 Enter a URL to generate a QR code
               </Typography>
             ) : (
@@ -148,7 +148,7 @@ export function QRCode() {
             )}
           </Box>
         </Grid>
-        
+
        {/* Tips and Tricks Box */}
         <Grid size={{xs:12}} order={{xs: 3}}>
           <QRTipsCard />
