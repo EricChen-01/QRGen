@@ -44,17 +44,14 @@ export default function ColorPicker({
   ];
   
   const sizePresets = [sizeMin, sizeMid, sizeMax]; // your low, medium, high values
-  const snapThreshold = 50; // how close the slider needs to be to snap
+  const snapThreshold = 100; // how close the slider needs to be to snap
 
   const handleOnSliderValueChange = (_: Event, newValue: number) => {
     // Check if we're close to a preset
     const snapped = sizePresets.find(p => Math.abs(p - newValue) <= snapThreshold);
     const finalValue = snapped ?? newValue; // snap if close, otherwise keep continuous
-    // setSliderValue(finalValue);
     onSizeChange({ target: { value: finalValue } } as any);
   };
-  
-//   const [sliderValue, setSliderValue] = useState<number>(sizeMin);
 
   return (
     <Box ml={2}>
@@ -66,9 +63,6 @@ export default function ColorPicker({
         min={sizeMin}
         max={sizeMax}
         onChange={handleOnSliderValueChange}
-        sx={{
-          width: "60%",
-        }}
       />
     </Box>
   );

@@ -5,6 +5,7 @@ import ShapeSelector from "./ShapeSelector";
 import ColorPicker from "./ColorPicker";
 import DownloadButtons from "./DownloadButtons";
 import SizeSlider from "./SizeSlider";
+import QRTipsCard from "./TipsCard";
 
 const sizeMin = 200;
 const sizeMax = 3000;
@@ -55,6 +56,7 @@ export function QRCode() {
         </Typography>
       </Box>
       <Grid container spacing={5}>
+        {/* Customization Box */}
         <Grid size={{xs: 12, sm: 12, md:6}} order={{xs: 2, sm: 2, md: 1}}>
           <Box
             sx={{
@@ -67,13 +69,13 @@ export function QRCode() {
           >
             <Typography
               variant="subtitle1"
-              sx={{ textTransform: "uppercase", letterSpacing: 1, mb: 1 }}
+              fontWeight={500}
+              sx={{ textTransform: "uppercase", mb: 1 }}
             >
               Customize
             </Typography>
             <Stack gap={2}>
-              <TextField sx={{width:'60%'}} label="Data" value={url} onChange={onUrlChange} />
-              {/* <TextField sx={{width:'120px'}} type="text" inputMode="numeric" label="Size (Pixels)" value={input} onChange={handleChange} error={error} helperText={error ? `Size must be between ${sizeMin} and ${sizeMax}` : ""} /> */}
+              <TextField multiline sx={{width:'60%'}} label="Data" value={url} onChange={onUrlChange} />
               <SizeSlider
                 sizeMin={sizeMin}
                 sizeMax={sizeMax}
@@ -106,6 +108,8 @@ export function QRCode() {
             </Stack>
           </Box>
         </Grid>
+       
+       {/* QR Code Box */}
         <Grid size={{xs: 12, sm: 12, md:6}} order={{xs: 1, sm: 1, md:2}}>
           <Box
             sx={{
@@ -144,8 +148,10 @@ export function QRCode() {
             )}
           </Box>
         </Grid>
+        
+       {/* Tips and Tricks Box */}
         <Grid size={{xs:12}} order={{xs: 3}}>
-          
+          <QRTipsCard />
         </Grid>
       </Grid>
     </Box>
